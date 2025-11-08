@@ -1,10 +1,9 @@
-
 from flask import Flask, render_template, redirect, url_for, request
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-# ********   Database Configuration ******
+# ********   Database Configuration ********
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///students.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -18,16 +17,15 @@ class Student(db.Model):
     student_class = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False)
 
-
-    with app.app_context():
-        db.create_all()
+# Create tables
+with app.app_context():
+    db.create_all()
 
 # ---------------- HOME ----------------
 @app.route('/')
 def home():
     students = Student.query.all()
     return render_template('index.html', std=students)
-
 
 # ---------------- ADD STUDENT ----------------
 @app.route('/add', methods=['GET', 'POST'])
@@ -46,7 +44,6 @@ def add_student():
 
     return render_template('add.html')
 
-
 # ---------------- UPDATE STUDENT ----------------
 @app.route('/update/<int:student_id>', methods=['GET', 'POST'])
 def update_student(student_id):
@@ -61,7 +58,6 @@ def update_student(student_id):
 
     return render_template('update.html', student=student)
 
-
 # ---------------- DELETE STUDENT ----------------
 @app.route('/delete/<int:student_id>', methods=['POST'])
 def delete_student(student_id):
@@ -69,7 +65,6 @@ def delete_student(student_id):
     db.session.delete(student)
     db.session.commit()
     return redirect(url_for('home'))
-
 
 # ---------------- STATIC PAGES ----------------
 @app.route('/about')
@@ -84,8 +79,6 @@ def contact():
 def services():
     return render_template('services.html')
 
-
 # ---------------- RUN APP ----------------
 if __name__ == '__main__':
-
     app.run(debug=True)
